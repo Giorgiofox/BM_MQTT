@@ -8,10 +8,9 @@ use warnings;
 no warnings 'uninitialized';
 
 #Set Up MQTT server and channel details
-my $mqtt_hostname = 'youserver';
-my $mqtt_input = "Master/2221/Session/222220";
+my $mqtt_hostname = 'yourserver:port';
+my $mqtt_input = "Master/2221/Session/#";
 #my $mqtt_input = "Master/2221/Repeater/#";
-#my $mqtt_output = "test/from";
 
 #instantiate the MQTT connection
 my $mqtt = Net::MQTT::Simple->new($mqtt_hostname);
@@ -27,12 +26,8 @@ while(1) { #main loop
 
 sub callback {#function to handle incoming MQTT messages
   my ($topic, $message) = @_; #take the incoming message data
-  $message = encode_utf8( $message );
   from_to($message, 'UTF-8','UTF-16le');
   my $decoded = decode_json($message);
-  #my $res = "got message: $message"; #store the message in a result string
-  #print STDERR $res."\n"; #print to console for debugging
-  #$mqtt->publish($mqtt_output => $res); #send the result string back to MQTT
   my $origin = $decoded->{'SourceID'};
   my $destination = $decoded->{'DestinationID'};
   #if (($origin eq "222220") or ($destination eq "222220")){print "$message\n";}
